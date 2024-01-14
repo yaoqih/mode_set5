@@ -47,11 +47,11 @@ def 参数生成(filename):
     df['MVAR'] = stock_df['close_20_sma'].rolling(window=20).var()
     df['RSV'] = stock_df['close'].rolling(window=9).apply(lambda x: (x[-1] - x.min()) / (x.max() - x.min()))
     df['KDJ_K'], df['KDJ_D'] = stock_df['kdjk'], stock_df['kdjd']
-    df['Bolling'] = stock_df['boll']
-    df['WR'] = stock_df['wr']
+    # df['Bolling'] = stock_df['boll']
+    # df['WR'] = stock_df['wr']
     df['DMA'] = stock_df['dma']
-    df['+DI'] = stock_df['pdi']
-    df['-DI'] = stock_df['ndi']
+    # df['+DI'] = stock_df['pdi']
+    # df['-DI'] = stock_df['ndi']
     df['DX'] = stock_df['dx']
     df['VR'] = stock_df['vr']
     df['VWMA'] = stock_df['vwma']
@@ -156,22 +156,22 @@ def 参数生成(filename):
     df['MIDPRICE'] = talib.MIDPRICE(df['high'], df['low'], timeperiod=14)
     df['SAR'] = talib.SAR(df['high'], df['low'])
     df['SAREXT'] = talib.SAREXT(df['high'], df['low'])
-    df['SMA'] = talib.SMA(df['close'], timeperiod=30)
+    # df['SMA'] = talib.SMA(df['close'], timeperiod=30)
     df['T3'] = talib.T3(df['close'], timeperiod=5, vfactor=0)
     df['TEMA'] = talib.TEMA(df['close'], timeperiod=30)
     df['TRIMA'] = talib.TRIMA(df['close'], timeperiod=30)
     df['WMA'] = talib.WMA(df['close'], timeperiod=30)
     df['ADX'] = talib.ADX(df['high'], df['low'], df['close'], timeperiod=14)
     df['ADXR'] = talib.ADXR(df['high'], df['low'], df['close'], timeperiod=14)
-    df['APO'] = talib.APO(df['close'], fastperiod=12, slowperiod=26, matype=0)
+    # df['APO'] = talib.APO(df['close'], fastperiod=12, slowperiod=26, matype=0)
     df['AROONOSC'] = talib.AROONOSC(df['high'], df['low'], timeperiod=14)
     df['BOP'] = talib.BOP(df['open'], df['high'], df['low'], df['close'])
     df['CCI'] = talib.CCI(df['high'], df['low'], df['close'], timeperiod=14)
-    df['CMO'] = talib.CMO(df['close'], timeperiod=14)
+    # df['CMO'] = talib.CMO(df['close'], timeperiod=14)
     df['DX'] = talib.DX(df['high'], df['low'], df['close'], timeperiod=14)
-    df['MACDmacdhist'],df['MACDmacdsignal'],df['MACDmacd'] = talib.MACD(df['close'], fastperiod=12, slowperiod=26, signalperiod=9)
+    # df['MACDmacdhist'],df['MACDmacdsignal'],df['MACDmacd'] = talib.MACD(df['close'], fastperiod=12, slowperiod=26, signalperiod=9)
     df['MACDEXTmacdhist'],df['MACDEXTmacdsignal'],df['MACDEXTmacd'] = talib.MACDEXT(df['close'], fastperiod=12, fastmatype=0, slowperiod=26, slowmatype=0, signalperiod=9, signalmatype=0)
-    df['MACDFIXmacdhist'],df['MACDFIXmacdsignal'],df['MACDFIXmacd'] = talib.MACDFIX(df['close'], signalperiod=9)
+    # df['MACDFIXmacdhist'],df['MACDFIXmacdsignal'],df['MACDFIXmacd'] = talib.MACDFIX(df['close'], signalperiod=9)
     df['MFI'] = talib.MFI(df['high'], df['low'], df['close'], df['volume'], timeperiod=14)
     df['MINUS_DI'] = talib.MINUS_DI(df['high'], df['low'], df['close'], timeperiod=14)
     df['MINUS_DM'] = talib.MINUS_DM(df['high'], df['low'], timeperiod=14)
@@ -179,10 +179,10 @@ def 参数生成(filename):
     df['PLUS_DI'] = talib.PLUS_DI(df['high'], df['low'], df['close'], timeperiod=14)
     df['PLUS_DM'] = talib.PLUS_DM(df['high'], df['low'], timeperiod=14)
     df['PPO'] = talib.PPO(df['close'], fastperiod=12, slowperiod=26, matype=0)
-    df['ROC'] = talib.ROC(df['close'], timeperiod=10)
+    # df['ROC'] = talib.ROC(df['close'], timeperiod=10)
     df['ROCP'] = talib.ROCP(df['close'], timeperiod=10)
-    df['ROCR'] = talib.ROCR(df['close'], timeperiod=10)
-    df['ROCR100'] = talib.ROCR100(df['close'], timeperiod=10)
+    # df['ROCR'] = talib.ROCR(df['close'], timeperiod=10)
+    # df['ROCR100'] = talib.ROCR100(df['close'], timeperiod=10)
     df['RSI'] = talib.RSI(df['close'], timeperiod=14)
     df['TRIX'] = talib.TRIX(df['close'], timeperiod=30)
     df['ULTOSC'] = talib.ULTOSC(df['high'], df['low'], df['close'], timeperiod1=7, timeperiod2=14, timeperiod3=28)
@@ -193,15 +193,15 @@ def 参数生成(filename):
     df['ATR'] = talib.ATR(df['high'], df['low'], df['close'], timeperiod=14)
     df['NATR'] = talib.NATR(df['high'], df['low'], df['close'], timeperiod=14)
     df['TRANGE'] = talib.TRANGE(df['high'], df['low'], df['close'])
-    df['AVGPRICE'] = talib.AVGPRICE(df['open'], df['high'], df['low'], df['close'])
-    df['MEDPRICE'] = talib.MEDPRICE(df['high'], df['low'])
+    # df['AVGPRICE'] = talib.AVGPRICE(df['open'], df['high'], df['low'], df['close'])
+    # df['MEDPRICE'] = talib.MEDPRICE(df['high'], df['low'])
     df['TYPPRICE'] = talib.TYPPRICE(df['high'], df['low'], df['close'])
-    df['WCLPRICE'] = talib.WCLPRICE(df['high'], df['low'], df['close'])
+    # df['WCLPRICE'] = talib.WCLPRICE(df['high'], df['low'], df['close'])
     df['HT_DCPERIOD'] = talib.HT_DCPERIOD(df['close'])
     df['HT_DCPHASE'] = talib.HT_DCPHASE(df['close'])
     df['HT_PHASORquadrature'],df['HT_PHASORinphase'] = talib.HT_PHASOR(df['close'])
     df['HT_SINEleadsine'],df['HT_SINEsine'] = talib.HT_SINE(df['close'])
-    df['STOCHslowd'],df['STOCHslowk'] = talib.STOCH(df['high'], df['low'], df['close'], fastk_period=5, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)
+    _,df['STOCHslowk'] = talib.STOCH(df['high'], df['low'], df['close'], fastk_period=5, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)
     df['STOCHFfastd'],df['STOCHFfastk'] = talib.STOCHF(df['high'], df['low'], df['close'], fastk_period=5, fastd_period=3, fastd_matype=0)
     df['STOCHRSIfastd'],df['STOCHRSIfastk'] = talib.STOCHRSI(df['close'], timeperiod=14, fastk_period=5, fastd_period=3, fastd_matype=0)
     df['AROONaroonup'],df['AROONaroondown'] = talib.AROON(df['high'], df['low'], timeperiod=14)
@@ -214,7 +214,7 @@ def 参数生成(filename):
     df['LINEARREG_INTERCEPT'] = talib.LINEARREG_INTERCEPT(df['close'], timeperiod=14)
     df['LINEARREG_SLOPE'] = talib.LINEARREG_SLOPE(df['close'], timeperiod=14)
     df['STDDEV'] = talib.STDDEV(df['close'], timeperiod=5, nbdev=1)
-    df['TSF'] = talib.TSF(df['close'], timeperiod=14)
+    # df['TSF'] = talib.TSF(df['close'], timeperiod=14)
     df['VAR'] = talib.VAR(df['close'], timeperiod=5, nbdev=1)
     df.replace(float('inf'),0,inplace=True)
     df.replace(float('-inf'),0,inplace=True)
@@ -223,14 +223,14 @@ def 参数生成(filename):
     # for i in range(len(averagelist)):
     #     stock[str(list(stock.columns)[averagelist[i]])] =stock[str(list(stock.columns)[averagelist[i]])]/stock['close']  #stock.apply(lambda x: x[str(list(stock.columns)[averagelist[i]-1])] / x['close'], axis=1)
     # for i in changeratelist:
-    #     k=stock[i].shift(1)
+    #     k=stock[i].shift(1)'TSF'
     #     k.drop([stock.index[0]],inplace=True)
     #     stock.drop([stock.index[0]],inplace=True)
         # stock[i+'_rate'] =(stock[i]-k)/k #stock.apply(lambda x: x[str(list(stock.columns)[averagelist[i]-1])] / x['close'], axis=1)
     # stock.drop(changeratelist,axis=1,inplace=True)
     # stock.replace(float('inf'),0,inplace=True)
     # stock.replace(float('-inf'),0,inplace=True)
-    for i in range(11,len(df.columns)):
+    for i in range(9,len(df.columns)):
         df.iloc[:,i:i+1]=df.iloc[:,i:i+1]/(np.sum(df.iloc[:,i:i+1])/len(df))
         # df.iloc[:,i:i+1]=df.iloc[:,i:i+1]/df['close']
         # df[list(df.columns)[i]+'_-1s']=(df.iloc[:,i:i+1]-df.iloc[:,i:i+1].shift(1))/df.iloc[:,i:i+1].shift(1)
@@ -252,5 +252,5 @@ def 参数生成(filename):
     # lock.release()
     return 0
 if __name__ == '__main__':
-    # delet(factor_path)
+    delet(factor_path)
     参数生成_all(basic_data_save_path,factor_path)
