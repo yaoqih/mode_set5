@@ -1,0 +1,76 @@
+Model(
+  (enc_embedding): DataEmbedding_inverted(
+    (value_embedding): Linear(in_features=36, out_features=512, bias=True)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (encoder): Encoder(
+    (attn_layers): ModuleList(
+      (0): EncoderLayer(
+        (attention): AttentionLayer(
+          (inner_attention): FullAttention(
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (query_projection): Linear(in_features=512, out_features=512, bias=True)
+          (key_projection): Linear(in_features=512, out_features=512, bias=True)
+          (value_projection): Linear(in_features=512, out_features=512, bias=True)
+          (out_projection): Linear(in_features=512, out_features=512, bias=True)
+        )
+        (conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+        (conv2): Conv1d(1024, 512, kernel_size=(1,), stride=(1,))
+        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (1): EncoderLayer(
+        (attention): AttentionLayer(
+          (inner_attention): FullAttention(
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (query_projection): Linear(in_features=512, out_features=512, bias=True)
+          (key_projection): Linear(in_features=512, out_features=512, bias=True)
+          (value_projection): Linear(in_features=512, out_features=512, bias=True)
+          (out_projection): Linear(in_features=512, out_features=512, bias=True)
+        )
+        (conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+        (conv2): Conv1d(1024, 512, kernel_size=(1,), stride=(1,))
+        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (2): EncoderLayer(
+        (attention): AttentionLayer(
+          (inner_attention): FullAttention(
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (query_projection): Linear(in_features=512, out_features=512, bias=True)
+          (key_projection): Linear(in_features=512, out_features=512, bias=True)
+          (value_projection): Linear(in_features=512, out_features=512, bias=True)
+          (out_projection): Linear(in_features=512, out_features=512, bias=True)
+        )
+        (conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+        (conv2): Conv1d(1024, 512, kernel_size=(1,), stride=(1,))
+        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (3): EncoderLayer(
+        (attention): AttentionLayer(
+          (inner_attention): FullAttention(
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (query_projection): Linear(in_features=512, out_features=512, bias=True)
+          (key_projection): Linear(in_features=512, out_features=512, bias=True)
+          (value_projection): Linear(in_features=512, out_features=512, bias=True)
+          (out_projection): Linear(in_features=512, out_features=512, bias=True)
+        )
+        (conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+        (conv2): Conv1d(1024, 512, kernel_size=(1,), stride=(1,))
+        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+    )
+    (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+  )
+  (projector): Linear(in_features=512, out_features=2, bias=True)
+)

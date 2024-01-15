@@ -1,0 +1,27 @@
+2024-01-08 19:01:45
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft96_sl0_ll5_pl512_dm8_nh4_el1_dl512_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.0140303373336792, mae:0.08078896254301071
+2024-01-08 19:17:56
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft96_sl0_ll5_pl512_dm8_nh4_el1_dl2048_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.01448764093220234, mae:0.08353059738874435
+2024-01-08 19:23:35
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft96_sl0_ll5_pl512_dm8_nh4_el1_dl256_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.014627913944423199, mae:0.08235001564025879
+2024-01-08 19:30:44
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft36_sl0_ll5_pl512_dm8_nh4_el1_dl1024_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.011355254799127579, mae:0.0700465515255928
+2024-01-13 02:13:53
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft36_sl0_ll2_pl512_dm8_nh4_el1_dl1024_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.00018097936117555946, mae:0.008383939042687416
+2024-01-13 13:13:54
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft36_sl0_ll2_pl512_dm8_nh4_el1_dl1024_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.0008329013944603503, mae:0.01820015162229538
+2024-01-13 14:41:00
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft92_sl0_ll2_pl512_dm8_nh4_el1_dl1024_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.0011871729511767626, mae:0.017607172951102257
+2024-01-13 16:51:09
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft36_sl0_ll2_pl512_dm8_nh4_el1_dl1024_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.008843827061355114, mae:0.060297057032585144
+2024-01-13 21:44:07
+>>>>>>>testing : stock_96_96_iTransformer_stock_MS_ft36_sl0_ll2_pl512_dm8_nh4_el1_dl1024_df1_fctimeF_ebTrue_dtExp_projection_0<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mse:0.003385478863492608, mae:0.03196350112557411
