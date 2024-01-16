@@ -731,7 +731,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         trues = []
         predict_path = './'
         f=open(predict_path+f"fininal_result.csv", 'w')
-        f.write('date,stock,score\n')
+        f.write('date,stock,score1,score2\n')
         f.close()
         self.model.eval()
         pbar = tqdm(os.listdir(self.args.root_path))
@@ -770,25 +770,26 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                         batch_y = pred_data.inverse_transform(batch_y.squeeze(0)).reshape(shape)
                     shape = outputs.shape
                     outputs = pred_data.inverse_transform(outputs.reshape((shape[0] * shape[1],) + shape[2:])).reshape(shape)
-                    batch_y = pred_data.inverse_transform(batch_y.reshape((shape[0] * shape[1],) + shape[2:])).reshape(shape)
-                    batch_y = batch_y[:, -self.args.pred_len:, f_dim:]
+                    # batch_y = pred_data.inverse_transform(batch_y.reshape((shape[0] * shape[1],) + shape[2:])).reshape(shape)
+                    # batch_y = batch_y[:, -self.args.pred_len:, f_dim:]
                     outputs = outputs[:, -self.args.pred_len:, f_dim:]
                     with open(predict_path+f"fininal_result.csv", 'a') as f:
-                        for batch in range(len(batch_y)):
-                            f.write(str(file) + ',')
-                            for i in range(batch_y.shape[1]):
-                                f.write(','+str(batch_y[batch][i][0]) + ','+str(outputs[batch][i][0]))
+                        for batch in range(len(outputs)):
+                            f.write(str(file.split('.')[0]) + ',')
+                            f.write(str(pred_data.latest_date))
+                            for i in range(outputs.shape[1]):
+                                f.write(','+str(outputs[batch][i][0]))
                             f.write('\n')
-                    preds.append(outputs)
-                    trues.append(batch_y)
-        preds = np.array(preds)
-        preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
-        df=pd.read_csv(predict_path+f"{checkpoint_name}.csv")
-        df['corr1_rate']=np.abs(df['pred1']-df['true1'])/df['true1']
-        df['corr2_rate']=np.abs(df['pred2']-df['true2'])/df['true2']
-        df['true_rate']=(df['true2']-df['true1'])/df['true1']
-        df['pred_rate']=(df['pred2']-df['pred1'])/df['pred1']
-        df.to_csv(predict_path+f"{checkpoint_name}.csv")
+                    # preds.append(outputs)
+                    # trues.append(batch_y)
+        # preds = np.array(preds)
+        # preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
+        # df=pd.read_csv(predict_path+f"{checkpoint_name}.csv")
+        # df['corr1_rate']=np.abs(df['pred1']-df['true1'])/df['true1']
+        # df['corr2_rate']=np.abs(df['pred2']-df['true2'])/df['true2']
+        # df['true_rate']=(df['true2']-df['true1'])/df['true1']
+        # df['pred_rate']=(df['pred2']-df['pred1'])/df['pred1']
+        # df.to_csv(predict_path+f"{checkpoint_name}.csv")
 
         # result save
         # folder_path = './results/' + setting + '/'

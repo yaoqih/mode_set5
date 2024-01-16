@@ -92,14 +92,11 @@ def download_basic_data_all(data_path,deubg=False):
     if deubg:
         for code in codelist[1:]:
             download_basic_data(code)
-    else:
-        lock = Lock()
-        with Pool(16, initializer=init, initargs=(lock,)) as pool:
-            # 使用 map_async，并传递回调函数
-            result = pool.map_async(download_basic_data, codelist[1:], callback=callback)
-            
-            # 等待所有子进程完成
-            result.wait()
+    lock = Lock()
+    pool = Pool(16, initializer=init, initargs=(lock,))
+    pool.map_async(download_basic_data,codelist)
+    pool.close()
+    pool.join()
 
     print("All processes are finished.")
     deleteNullFile(data_path)

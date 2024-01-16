@@ -740,7 +740,7 @@ class Dataset_stock_Pred(Dataset):
             self.label_len = size[1]
             self.pred_len = size[2]
         # init
-        assert flag in ['pred']
+        # assert flag in ['pred']
 
         self.features = features
         self.target = target
@@ -767,6 +767,7 @@ class Dataset_stock_Pred(Dataset):
             cols = list(df_raw.columns)
             cols.remove(self.target)
             cols.remove('date')
+        self.latest_date=df_raw['date'].values[-1]
         df_raw = df_raw[['date'] + cols + [self.target]]
         border1 = len(df_raw) - self.seq_len
         border2 = len(df_raw)

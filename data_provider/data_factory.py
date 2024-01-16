@@ -1,5 +1,5 @@
 from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_Solar, Dataset_PEMS, \
-    Dataset_Pred,Dataset_Stock
+    Dataset_Pred,Dataset_Stock,Dataset_stock_Pred
 from torch.utils.data import DataLoader
 
 data_dict = {
@@ -35,6 +35,12 @@ def data_provider(args, flag):
         batch_size = args.batch_size  # bsz for train and valid
         freq = args.freq
 
+    if flag == 'final':
+        shuffle_flag = False
+        drop_last = True
+        batch_size =  1
+        # data_set=data_set[-1]
+        Data = Dataset_stock_Pred
     data_set = Data(
         root_path=args.root_path,
         data_path=args.data_path,
@@ -45,11 +51,6 @@ def data_provider(args, flag):
         timeenc=timeenc,
         freq=freq,
     )
-    if flag == 'final':
-        shuffle_flag = False
-        drop_last = True
-        batch_size =  1
-        data_set=data_set[-1]
     # print(flag, len(data_set))
     data_loader = DataLoader(
         data_set,

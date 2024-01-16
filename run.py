@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # data loader
     parser.add_argument('--data', type=str, required=False, default='stock', help='dataset type')
-    parser.add_argument('--root_path', type=str, default='./dataset/stock_new_sample/', help='root path of the data file')
+    parser.add_argument('--root_path', type=str, default='./factor/', help='root path of the data file')
     parser.add_argument('--data_path', type=str, default='SH600601.parquet', help='data csv file')
     parser.add_argument('--features', type=str, default='MS',
                         help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
@@ -71,7 +71,7 @@ if __name__ == '__main__':
                         help='0: default 1: value embedding + temporal embedding + positional embedding 2: value embedding + temporal embedding 3: value embedding + positional embedding 4: value embedding')
     parser.add_argument('--res_attention', type=bool, default=True, help='res attention')
     # optimization
-    parser.add_argument('--num_workers', type=int, default=10, help='data loader num workers')
+    parser.add_argument('--num_workers', type=int, default=0, help='data loader num workers')
     parser.add_argument('--itr', type=int, default=1, help='experiments times')
     parser.add_argument('--train_epochs', type=int, default=2, help='train epochs')
     parser.add_argument('--batch_size', type=int, default=128, help='batch size of train input data')
@@ -145,7 +145,7 @@ if __name__ == '__main__':
             exp = Exp(args)  # set experiments
             print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
             
-            exp.train(setting)
+            # exp.train(setting)
             # exp.pre_train_test(setting)
 
             # print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
@@ -154,7 +154,7 @@ if __name__ == '__main__':
             # if args.do_predict:
             #     print('>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
             #     exp.predict(setting, True)
-            exp.predict(setting, True)
+            exp.predict_latest(setting, True)
 
             torch.cuda.empty_cache()
     else:

@@ -1,2 +1,5 @@
-/origin_data
-/factor
+/origin_data/*
+/factor/*
+/checkpoints/*
+
+*.pyc
