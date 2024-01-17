@@ -21,14 +21,14 @@ from urllib.request import Request
 import psutil
 import warnings
 import traceback
-from config import other_file_path,basic_data_save_path
+
 warnings.filterwarnings("ignore")
 averagelist=[15,16,17,21,22,23,24,25,26,28,30,32,33,34,35,36,40,42,43,44,52,53,55,56,57]
 averagelist=[15,16,17,21,22,23,24,25,26,28,30,32,33,34,35,36,40,42,43,44,52,53,55,56,57,58,63,61,67]
-changeratelist=['turnover_rate','volume','amount','总市值','流通市值']
-# data_path='C:\\stock_data2\\'
-# other_file_path='C:\\data_test\\other_file\\'
-# basic_data_save_path='C:\\原始数据\\'
+changeratelist=['换手率','volume','成交金额','总市值','流通市值']
+data_path='C:\\stock_data2\\'
+other_file_path='C:\\data_test\\other_file\\'
+basic_data_save_path='C:\\原始数据\\'
 # cpu信息
 def get_cpu_info():
     cpu_percent = psutil.cpu_percent(interval=1)
@@ -185,7 +185,7 @@ def last_train_data(initel=0):
     以今日为基准上一个交易日
     :initel:负为下一个，正为上一个
     '''
-    trandcal=pd.read_csv(other_file_path+'trade_calendar.csv',encoding='utf-8')
+    trandcal=pd.read_csv(other_file_path+'交易日历.csv',encoding='gb18030')
     #提取所有开盘日
     tradingdays = trandcal[trandcal['jybz'] == 1]   # 开盘日
     if int(time.strftime("%H", time.localtime()))<9:
@@ -247,14 +247,14 @@ def 回测(df,dayafter,columns_list,rename=False):
     for k in columns_list:
         df[k]=''
     for i in range(len(df)):
-        date=df['date'].iat[i]
+        date=df['交易日期'].iat[i]
         code=df['股票代码'].iat[i]
         code=code_transport(code,2)
         if code+'.csv' in os.listdir(data_path):
-            df1=pd.read_csv(data_path+code+'.csv',encoding='utf-8')
+            df1=pd.read_csv(data_path+code+'.csv',encoding='gb18030')
             index=-1
             for j in range(len(df1)-1,-1,-1):
-                if compare_date(df1['date'].iat[j],date):
+                if compare_date(df1['交易日期'].iat[j],date):
                     index=j
                     break
             index+=dayafter
@@ -271,7 +271,7 @@ def 回测(df,dayafter,columns_list,rename=False):
     if rename:
         df.rename(columns=dict(zip(columns_list,rename)),inplace=True)
     return df
-def sent_email(code,receiver='1375626371@qq.com',filename=None,default="注意事项：\n1.此列表仅供参考，存在一定的风险，请使用者根据自己的情况自行选择，本人不对列表的准确性负责。\n2.此列表只对文件内个股date的下一个交易日有效,下一个交易日之后的pct_chg未测试，准确度未知\n3.此列表只针对数据分析，暂时无消息面的分析，使用前请自行检查该公司在上个交易日结束后至下一个交易日是否有负面消息。\n4.本列表目前在实验阶段，准确率还有波动。\n5.ST股票风险相对较高,请提高警惕,做好风险防控\n6.入市有风险，投资需谨慎。\n如果使用该列表视作仔细阅读，理解并同意上述说明，自行承担风险。"):
+def sent_email(code,receiver='1375626371@qq.com',filename=None,default="注意事项：\n1.此列表仅供参考，存在一定的风险，请使用者根据自己的情况自行选择，本人不对列表的准确性负责。\n2.此列表只对文件内个股交易日期的下一个交易日有效,下一个交易日之后的涨跌幅未测试，准确度未知\n3.此列表只针对数据分析，暂时无消息面的分析，使用前请自行检查该公司在上个交易日结束后至下一个交易日是否有负面消息。\n4.本列表目前在实验阶段，准确率还有波动。\n5.ST股票风险相对较高,请提高警惕,做好风险防控\n6.入市有风险，投资需谨慎。\n如果使用该列表视作仔细阅读，理解并同意上述说明，自行承担风险。"):
     '''
     :code:邮件标题
     :receiver:收件人地址可以是list
@@ -304,8 +304,8 @@ def sent_email(code,receiver='1375626371@qq.com',filename=None,default="注意�
                 else:
                     前缀=''
                 if filename == 'c.csv'or filename == 'b.csv'or filename == 'd.csv':
-                    df=pd.read_csv(filename,encoding='utf-8')
-                    date=df['date'].iat[-1]
+                    df=pd.read_csv(filename,encoding='gb18030')
+                    date=df['交易日期'].iat[-1]
                 else:
                     date=datetime.date.today()
                 part = MIMEApplication(open(i, 'rb').read())
@@ -317,8 +317,8 @@ def sent_email(code,receiver='1375626371@qq.com',filename=None,default="注意�
             else:
                 前缀=''
             if filename == 'c.csv'or filename == 'b.csv'or filename == 'd.csv':
-                df=pd.read_csv(filename,encoding='utf-8')
-                date=df['date'].iat[-1]
+                df=pd.read_csv(filename,encoding='gb18030')
+                date=df['交易日期'].iat[-1]
             else:
                 date=datetime.date.today()
             part = MIMEApplication(open(filename, 'rb').read())
@@ -353,26 +353,26 @@ def download_basic_data(inputfile):
             if len(content)==0:
                 print('HTTP,Error '+inputfile)
                 return -1
-            content=content.decode('utf-8','ignore').replace('\n','')
+            content=content.decode('gb18030','ignore').replace('\n','')
             # lock.acquire()
             f = open(basic_data_save_path+inputfile,'w')
             f.write(content)
             f.close()
             time.sleep(0.01)
-            df=pd.read_csv(basic_data_save_path+inputfile,encoding='utf-8')
+            df=pd.read_csv(basic_data_save_path+inputfile,encoding='gb18030')
             # lock.release()
-            df=df[~(df['pct_chg'].isin([None]))]
-            df=df[~(df['turnover_rate'].isin([None]))]
-            df=df[~(df['turnover_rate'].isin(['None']))]
-            df=df[~(df['open'].isin([0.0]))]
-            df=df[~(df['open'].isin([0]))]
+            df=df[~(df['涨跌幅'].isin([None]))]
+            df=df[~(df['换手率'].isin([None]))]
+            df=df[~(df['换手率'].isin(['None']))]
+            df=df[~(df['开盘价'].isin([0.0]))]
+            df=df[~(df['开盘价'].isin([0]))]
             df=df[~(df['名称'].isin(['']))]
-            df['turnover_rate']=pd.DataFrame(df['turnover_rate'],dtype=np.float)
-            df.rename(columns={'日期':'date','前收盘':'前close'},inplace=True)
-            df.sort_values(by=['date'], inplace=True)
+            df['换手率']=pd.DataFrame(df['换手率'],dtype=np.float)
+            df.rename(columns={'日期':'交易日期','前收盘':'前收盘价'},inplace=True)
+            df.sort_values(by=['交易日期'], inplace=True)
             df.drop(['成交笔数'],axis=1,inplace=True)
-            df.to_csv(basic_data_save_path+inputfile,encoding='utf-8',index=False)
-            if df.shape[0]>0 and len(df)>50 and compare_date(df['date'].iloc[-1],datetime)and compare_date(df['date'].iloc[-1],traintime):
+            df.to_csv(basic_data_save_path+inputfile,encoding='gb18030',index=False)
+            if df.shape[0]>0 and len(df)>50 and compare_date(df['交易日期'].iloc[-1],datetime)and compare_date(df['交易日期'].iloc[-1],traintime):
                 time.sleep(0.01)
             else:
                 if inputfile in os.listdir(basic_data_save_path):
@@ -407,32 +407,32 @@ def download_data(inputfile):
             if len(content)==0:
                 print('HTTP,Error '+inputfile)
                 return -1
-            content=content.decode('utf-8','ignore').replace('\n','')
+            content=content.decode('gb18030','ignore').replace('\n','')
             lock.acquire()
             f = open(data_path+inputfile,'w')
             f.write(content)
             f.close()
             time.sleep(0.01)
-            df=pd.read_csv(data_path+inputfile,encoding='utf-8')
+            df=pd.read_csv(data_path+inputfile,encoding='gb18030')
             lock.release()
-            df=df[~(df['pct_chg'].isin([None]))]
-            df=df[~(df['open'].isin([0.0]))]
-            df=df[~(df['open'].isin([0]))]
+            df=df[~(df['涨跌幅'].isin([None]))]
+            df=df[~(df['开盘价'].isin([0.0]))]
+            df=df[~(df['开盘价'].isin([0]))]
             df=df[~(df['名称'].isin(['']))]
-            df['turnover_rate']=pd.DataFrame(df['turnover_rate'],dtype=np.float)
+            df['换手率']=pd.DataFrame(df['换手率'],dtype=np.float)
             if df.shape[0]>0 and len(df)>50 and  (df['日期'].iloc[0] ==trandtime or df['日期'].iloc[-1]==trandtime.replace('-','/')):
-                df.rename(columns={'日期':'date','前收盘':'前close'},inplace=True)
-                df.sort_values(by=['date'], inplace=True)
-                df['date']=pd.to_datetime(df['date'],format=r"%Y/%m/%d")
-                df['复权pct_chg']=df['close']/df['前close']-1
-                df['复权pct_chg'].iloc[0]=df['close'].iloc[0]/df['open'].iloc[0]-1
-                df['复权因子'] = (df['复权pct_chg'] + 1).cumprod()
-                initial_price = df.iloc[0]['close'] / (1 + df.iloc[0]['复权pct_chg'])  # 计算上市价格
-                df['close_后复权'] = initial_price * df['复权因子']  # 相乘得到复权价
-                df['open_后复权'] = df['open'] / df['close'] * df['close_后复权']
-                df['high_后复权'] = df['high'] / df['close'] * df['close_后复权']
-                df['low_后复权'] = df['low'] / df['close'] * df['close_后复权']
-                rename_dict={'open_后复权':'open','close_后复权':'close','high_后复权':'high','low_后复权':'low','vol':'volume','成交额（千元）':'amount'}
+                df.rename(columns={'日期':'交易日期','前收盘':'前收盘价'},inplace=True)
+                df.sort_values(by=['交易日期'], inplace=True)
+                df['交易日期']=pd.to_datetime(df['交易日期'],format=r"%Y/%m/%d")
+                df['复权涨跌幅']=df['收盘价']/df['前收盘价']-1
+                df['复权涨跌幅'].iloc[0]=df['收盘价'].iloc[0]/df['开盘价'].iloc[0]-1
+                df['复权因子'] = (df['复权涨跌幅'] + 1).cumprod()
+                initial_price = df.iloc[0]['收盘价'] / (1 + df.iloc[0]['复权涨跌幅'])  # 计算上市价格
+                df['收盘价_后复权'] = initial_price * df['复权因子']  # 相乘得到复权价
+                df['开盘价_后复权'] = df['开盘价'] / df['收盘价'] * df['收盘价_后复权']
+                df['最高价_后复权'] = df['最高价'] / df['收盘价'] * df['收盘价_后复权']
+                df['最低价_后复权'] = df['最低价'] / df['收盘价'] * df['收盘价_后复权']
+                rename_dict={'开盘价_后复权':'open','收盘价_后复权':'close','最高价_后复权':'high','最低价_后复权':'low','成交量':'volume','成交额（千元）':'amount'}
                 df.rename(columns=rename_dict,inplace=True)
                 if len(df)>33:
                     df['fast'],df['slow'],df['DIFF']=calculateMACD(df['close'])
@@ -485,12 +485,12 @@ def download_data(inputfile):
                 stock['RVI']=RVI(stock)
                 stock['VHF_ma10'] = talib.MA(stock['VHF'] , timeperiod=10)
                 stock['RVI_ma10'] = talib.MA(stock['RVI'] , timeperiod=10)
-                stock=stock[['date','股票代码','名称','close','pct_chg','turnover_rate','volume','amount','总市值','流通市值','复权pct_chg','close','open','high','low','fast','slow','diff','rsi_6','rsi_12','rsi_24','ma_5','ma_10','ma_20','ma_30','ma_60','ma_6','bias_6','ma_12','bias_12','ma_24','bias_24','close_20_sma','close_20_mstd','boll','boll_ub','boll_lb','kdjk_9','kdjd_9','kdjj_9','middle_14_sma','cci','close_-1_s','tr','atr','high_delta','low_delta','pdi_14','mdi_14','dx_14','dx_6_ema','adx_6_ema','trix','tema','vr','close_10_sma','close_50_sma','dma','VHF_ma10','RVI_ma10','OBV_ma10','DPO','RVI','VHF','wr_6','MOM','OBV','CMO','ROC','ROC_ma10','PSY','PSY_ma10','wr_10']]
+                stock=stock[['交易日期','股票代码','名称','收盘价','涨跌幅','换手率','volume','成交金额','总市值','流通市值','复权涨跌幅','close','open','high','low','fast','slow','diff','rsi_6','rsi_12','rsi_24','ma_5','ma_10','ma_20','ma_30','ma_60','ma_6','bias_6','ma_12','bias_12','ma_24','bias_24','close_20_sma','close_20_mstd','boll','boll_ub','boll_lb','kdjk_9','kdjd_9','kdjj_9','middle_14_sma','cci','close_-1_s','tr','atr','high_delta','low_delta','pdi_14','mdi_14','dx_14','dx_6_ema','adx_6_ema','trix','tema','vr','close_10_sma','close_50_sma','dma','VHF_ma10','RVI_ma10','OBV_ma10','DPO','RVI','VHF','wr_6','MOM','OBV','CMO','ROC','ROC_ma10','PSY','PSY_ma10','wr_10']]
                 #stock.drop(changeratelist,axis=1,inplace=True)
                 stock.replace(float('inf'),0,inplace=True)
                 stock.replace(float('-inf'),0,inplace=True)
                 for i in range(len(averagelist)):
-                    stock[str(list(stock.columns)[averagelist[i]])] =stock[str(list(stock.columns)[averagelist[i]])]/stock['close']  #stock.apply(lambda x: x[str(list(stock.columns)[averagelist[i]-1])] / x['close'], axis=1)
+                    stock[str(list(stock.columns)[averagelist[i]])] =stock[str(list(stock.columns)[averagelist[i]])]/stock['收盘价']  #stock.apply(lambda x: x[str(list(stock.columns)[averagelist[i]-1])] / x['close'], axis=1)
                 for i in changeratelist:
                     k=stock[i].shift(1)
                     k.drop([stock.index[0]],inplace=True)
@@ -506,11 +506,11 @@ def download_data(inputfile):
                     # stock[list(stock.columns)[i]+'_-2s']=stock[list(stock.columns)[i]]-stock[list(stock.columns)[i]+'_-2']
                 stock=stock.fillna(0)
                 stock.replace('None',0,inplace=True)
-                # rename_dict={'open':'open_后复权','clsoe':'close_后复权','high':'high_后复权','low':'low_后复权','volume':'vol（手）','amount':'成交额（千元）','pct_chg':'change','change':'pct_chg'}
+                # rename_dict={'open':'开盘价_后复权','clsoe':'收盘价_后复权','high':'最高价_后复权','low':'最低价_后复权','volume':'成交量（手）','amount':'成交额（千元）','涨跌幅':'涨跌额','涨跌额':'涨跌幅'}
                 # df.rename(columns=rename_dict,inplace=True)
                 stock=stock[50:]
                 # lock.acquire()
-                stock.to_csv(data_path+inputfile,encoding='utf-8',index=None,float_format='%.4f')
+                stock.to_csv(data_path+inputfile,encoding='gb18030',index=None,float_format='%.4f')
                 # lock.release()
                 return 0
             else:
@@ -558,9 +558,9 @@ def get_prise(code):
         }
         nowpriceurl='https://hq.sinajs.cn/list=%s'%code
         req = Request(nowpriceurl,headers=headers)
-        nowprice=urlopen(req).read().decode('utf-8')
+        nowprice=urlopen(req).read().decode('GB18030')
         if nowprice[-1]!=';':
-            nowprice=urlopen(nowpriceurl).read().decode('utf-8')
+            nowprice=urlopen(nowpriceurl).read().decode('GB18030')
         nowprice=dict(zip(['open','before','now','high','low','buy1','volume','turnover'],nowprice.split(',')[1:9]))#  1,2,3,4,5
         if 'dict' not in str(type(nowprice)):
             nowprice=get_prise(code[2:])
@@ -574,15 +574,15 @@ def download_basic_data_all(data_path):
     下载所有原始数据
     :data_path:存放地址
     '''
-    if 'SZ000001.csv' not in os.listdir(data_path)  or pd.read_csv(data_path+'SZ000001.csv',encoding='utf-8')['date'].iat[-1]!=last_train_data():
+    if 'SZ000001.csv' not in os.listdir(data_path)  or pd.read_csv(data_path+'SZ000001.csv',encoding='gb18030')['交易日期'].iat[-1]!=last_train_data():
         delet(data_path)
     global basic_data_save_path
     basic_data_save_path = data_path
-    df = pd.read_csv(other_file_path+'股票列表.csv',encoding='utf-8').code
+    df = pd.read_csv(other_file_path+'股票列表.csv',encoding='gb18030').code
     codelist = list(df)
     download_basic_data('1')
     download_basic_data('1')
-    datetime_now=pd.read_csv(basic_data_save_path + 'SZ000001.csv', encoding='utf-8')['date'].iloc[-1]
+    datetime_now=pd.read_csv(basic_data_save_path + 'SZ000001.csv', encoding='gb18030')['交易日期'].iloc[-1]
     lock = Lock()
     pool = Pool(16, initializer=init, initargs=(lock,))
     pool.map_async(download_basic_data,codelist)
@@ -590,13 +590,13 @@ def download_basic_data_all(data_path):
     pool.join()
     deleteNullFile(data_path)
     for i in os.listdir(basic_data_save_path):
-        if not compare_date(datetime_now,pd.read_csv(basic_data_save_path + i, encoding='utf-8')['date'].iloc[-1]):
+        if not compare_date(datetime_now,pd.read_csv(basic_data_save_path + i, encoding='gb18030')['交易日期'].iloc[-1]):
             os.remove(basic_data_save_path+i)
     print('DownloadComplete')
 def download_data_all():
-    if 'SZ000001.csv' not in os.listdir(data_path) or pd.read_csv(data_path+'SZ000001.csv',encoding='utf-8').shape[1]<30 or pd.read_csv(data_path+'SZ000001.csv',encoding='utf-8')['date'].iat[-1]!=last_train_data():
+    if 'SZ000001.csv' not in os.listdir(data_path) or pd.read_csv(data_path+'SZ000001.csv',encoding='gb18030').shape[1]<30 or pd.read_csv(data_path+'SZ000001.csv',encoding='gb18030')['交易日期'].iat[-1]!=last_train_data():
         delet(data_path)
-    df = pd.read_csv(other_file_path+'股票列表.csv',encoding='utf-8').code
+    df = pd.read_csv(other_file_path+'股票列表.csv',encoding='gb18030').code
     codelist = list(df)
     lock = Lock()
     pool = Pool(16, initializer=init, initargs=(lock,))
@@ -618,12 +618,12 @@ def get_allcode_pricenow(filename):
     获取股票上一个交易日情况
     :filename:文件路径
     '''
-    df=pd.read_csv(filename,encoding='utf-8')
+    df=pd.read_csv(filename,encoding='gb18030')
     drop_list=[]
     df['pricenow']=0
-    df['现pct_chg']=0
-    df['open']=0
-    df['开盘pct_chg']=0
+    df['现涨跌幅']=0
+    df['开盘价']=0
+    df['开盘涨跌幅']=0
     df['实际收益']=0
     for i in range(len(df)):
         code=df['股票代码'].iloc[i][1:]
@@ -633,13 +633,13 @@ def get_allcode_pricenow(filename):
         if price['open']==0:
             drop_list.append(i)
         df['pricenow'].iloc[i]=price['now']
-        df['现pct_chg'].iloc[i]=round((df['pricenow'].iloc[i]- price['before'])/price['before'],4)*100
-        df['open'].iloc[i]=price['open']
-        df['开盘pct_chg'].iloc[i]=round((price['open']- price['before'])/price['before'],4)*100
+        df['现涨跌幅'].iloc[i]=round((df['pricenow'].iloc[i]- price['before'])/price['before'],4)*100
+        df['开盘价'].iloc[i]=price['open']
+        df['开盘涨跌幅'].iloc[i]=round((price['open']- price['before'])/price['before'],4)*100
     for i in drop_list:
         df.drop(i,axis=0,inplace=True) 
     df=df.reindex(range(len(df)),method='bfill') 
-    df['实际收益']=((df['pricenow']-df['open'])/df['open'])*100
+    df['实际收益']=((df['pricenow']-df['开盘价'])/df['开盘价'])*100
     return df
 def get_allcode_pricepast(df,file_path):
     '''
@@ -648,16 +648,16 @@ def get_allcode_pricepast(df,file_path):
     :file_path:对应数据库存放地址   
     '''
     
-    date=df['date'].iloc[0]
+    date=df['交易日期'].iloc[0]
     drop_list=[]
     df['pricenow']=0
-    df['open']=0
-    df['close']=0
-    df['high']=0
-    df['low']=0
-    df['后open']=0
-    df['前close（复权）']=0
-    df['开盘pct_chg']=0
+    df['开盘价']=0
+    df['收盘价']=0
+    df['最高价']=0
+    df['最低价']=0
+    df['后开盘价']=0
+    df['前收盘价（复权）']=0
+    df['开盘涨跌幅']=0
     df['实际收益']=0
     df['第三天开盘收益']=0
     df['第三天收盘收益']=0
@@ -667,31 +667,31 @@ def get_allcode_pricepast(df,file_path):
         code=df['股票代码'].iloc[i][1:]
         code=code_transport(code,2)
         if code+'.csv' in os.listdir(file_path):
-            df1=pd.read_csv(file_path+code+'.csv',encoding='utf-8')
-            df1['open'] = pd.to_numeric(df1['open'],errors='coerce')
-            df1['close'] = pd.to_numeric(df1['close'],errors='coerce')
+            df1=pd.read_csv(file_path+code+'.csv',encoding='gb18030')
+            df1['开盘价'] = pd.to_numeric(df1['开盘价'],errors='coerce')
+            df1['收盘价'] = pd.to_numeric(df1['收盘价'],errors='coerce')
             for b in range(len(df1)-1,-1,-1):
-                if compare_date(df1['date'].iloc[b],date):
+                if compare_date(df1['交易日期'].iloc[b],date):
                     break
-            df['前close（复权）'].iloc[i]=df1['close'].iloc[b]
+            df['前收盘价（复权）'].iloc[i]=df1['收盘价'].iloc[b]
             if b+1<len(df1):
-                df['open'].iloc[i]=df1['open'].iloc[b+1]
-                df['close'].iloc[i]=df1['close'].iloc[b+1]
-                df['high'].iloc[i]=df1['high'].iloc[b+1]
-                df['low'].iloc[i]=df1['low'].iloc[b+1]
-                df['开盘pct_chg'].iloc[i]=round((df1['open'].iloc[b+1]- df1['close'].iloc[b])/df1['close'].iloc[b],4)*100
+                df['开盘价'].iloc[i]=df1['开盘价'].iloc[b+1]
+                df['收盘价'].iloc[i]=df1['收盘价'].iloc[b+1]
+                df['最高价'].iloc[i]=df1['最高价'].iloc[b+1]
+                df['最低价'].iloc[i]=df1['最低价'].iloc[b+1]
+                df['开盘涨跌幅'].iloc[i]=round((df1['开盘价'].iloc[b+1]- df1['收盘价'].iloc[b])/df1['收盘价'].iloc[b],4)*100
             if b+2<len(df1):
-                df['后open'].iloc[i]=df1['open'].iloc[b+2]
-                df['pricenow'].iloc[i]=df1['close'].iloc[b+2]
-                df['第三天收盘收益'].iloc[i]=((df1['close'].iloc[b+2]-df1['open'].iloc[b+1])/df1['open'].iloc[b+1])
+                df['后开盘价'].iloc[i]=df1['开盘价'].iloc[b+2]
+                df['pricenow'].iloc[i]=df1['收盘价'].iloc[b+2]
+                df['第三天收盘收益'].iloc[i]=((df1['收盘价'].iloc[b+2]-df1['开盘价'].iloc[b+1])/df1['开盘价'].iloc[b+1])
             if b+3<len(df1):
-                df['第四天开盘收益'].iloc[i]=((df1['open'].iloc[b+3]-df1['open'].iloc[b+1])/df1['open'].iloc[b+1])
-                df['第四天收盘收益'].iloc[i]=((df1['close'].iloc[b+3]-df1['open'].iloc[b+1])/df1['open'].iloc[b+1])
+                df['第四天开盘收益'].iloc[i]=((df1['开盘价'].iloc[b+3]-df1['开盘价'].iloc[b+1])/df1['开盘价'].iloc[b+1])
+                df['第四天收盘收益'].iloc[i]=((df1['收盘价'].iloc[b+3]-df1['开盘价'].iloc[b+1])/df1['开盘价'].iloc[b+1])
             df.fillna(inplace=True,value=0.0)
     for i in drop_list:
         df.drop(i,axis=0,inplace=True) 
     df=df.reindex(range(len(df)),method='bfill') 
-    df['第三天开盘收益']=((df['后open']-df['open'])/df['open'])
+    df['第三天开盘收益']=((df['后开盘价']-df['开盘价'])/df['开盘价'])
     return df
 def delet(roottdir):
     '''
@@ -724,7 +724,7 @@ def 数据周期转化_all(path,cycle,goal_path):
     :cycle:天数
     :goal_path:目标储存位置
     '''
-    if 'SZ000001.csv' not in os.listdir(goal_path)  or not compare_date(pd.read_csv(goal_path+'SZ000001.csv',encoding='utf-8')['date'].iat[-1],last_train_data()):
+    if 'SZ000001.csv' not in os.listdir(goal_path)  or not compare_date(pd.read_csv(goal_path+'SZ000001.csv',encoding='gb18030')['交易日期'].iat[-1],last_train_data()):
         delet(goal_path)
     codelist = os.listdir(path)
     codelist_all=[]
@@ -742,39 +742,39 @@ def 数据周期转化(filename):
         cycle=int(filename.split(',')[1])
         goal_path=filename.split(',')[2]
         filename=filename.split(',')[0]
-        df=pd.read_csv(filename,encoding='utf-8')
+        df=pd.read_csv(filename,encoding='gb18030')
         num=len(df)
         m,n = map(int,[len(df.columns),num])
         matrix = [[0]*(m)]*(n)
         df1=pd.DataFrame(matrix,columns=list(df.columns))
         # df1=df1.reindex(columns=list(df.columns))
-        df['change'] = pd.to_numeric(df['change'],errors='coerce')
-        df['turnover_rate'] = pd.to_numeric(df['turnover_rate'],errors='coerce')
-        df['vol'] = pd.to_numeric(df['vol'],errors='coerce')
-        df['amount'] = pd.to_numeric(df['amount'],errors='coerce')
+        df['涨跌额'] = pd.to_numeric(df['涨跌额'],errors='coerce')
+        df['换手率'] = pd.to_numeric(df['换手率'],errors='coerce')
+        df['成交量'] = pd.to_numeric(df['成交量'],errors='coerce')
+        df['成交金额'] = pd.to_numeric(df['成交金额'],errors='coerce')
         df['总市值'] = pd.to_numeric(df['总市值'],errors='coerce')
         df['流通市值'] = pd.to_numeric(df['流通市值'],errors='coerce')
         a=0
         for i in range(len(df)-1,cycle,-1):
-            df1['date'].iloc[a]=df['date'].iloc[i]
-            df1['close'].iloc[a]=df['close'].iloc[i]
-            df1['open'].iloc[a]=df['open'].iloc[i-cycle+1]
-            df1['high'].iloc[a]=max(list(df['high'].iloc[i-cycle+1:i+1]))
-            df1['low'].iloc[a]=min(list(df['low'].iloc[i-cycle+1:i+1]))
-            df1['前close'].iloc[a]=df['前close'].iloc[i-cycle+1]
-            df1['change'].iloc[a]=np.sum(list(df['change'].iloc[i-cycle+1:i+1]))
-            df1['turnover_rate'].iloc[a]=np.average((list(df['turnover_rate'].iloc[i-cycle+1:i+1])))
-            df1['vol'].iloc[a]=np.sum((list(df['vol'].iloc[i-cycle+1:i+1])))
-            df1['amount'].iloc[a]=np.sum((list(df['amount'].iloc[i-cycle+1:i+1])))
+            df1['交易日期'].iloc[a]=df['交易日期'].iloc[i]
+            df1['收盘价'].iloc[a]=df['收盘价'].iloc[i]
+            df1['开盘价'].iloc[a]=df['开盘价'].iloc[i-cycle+1]
+            df1['最高价'].iloc[a]=max(list(df['最高价'].iloc[i-cycle+1:i+1]))
+            df1['最低价'].iloc[a]=min(list(df['最低价'].iloc[i-cycle+1:i+1]))
+            df1['前收盘价'].iloc[a]=df['前收盘价'].iloc[i-cycle+1]
+            df1['涨跌额'].iloc[a]=np.sum(list(df['涨跌额'].iloc[i-cycle+1:i+1]))
+            df1['换手率'].iloc[a]=np.average((list(df['换手率'].iloc[i-cycle+1:i+1])))
+            df1['成交量'].iloc[a]=np.sum((list(df['成交量'].iloc[i-cycle+1:i+1])))
+            df1['成交金额'].iloc[a]=np.sum((list(df['成交金额'].iloc[i-cycle+1:i+1])))
             df1['总市值'].iloc[a]=np.average((list(df['总市值'].iloc[i-cycle+1:i+1])))
             df1['流通市值'].iloc[a]=np.average((list(df['流通市值'].iloc[i-cycle+1:i+1])))
             a=a+1
-        df1.drop(df1[df1['date']==0].index,inplace=True)
+        df1.drop(df1[df1['交易日期']==0].index,inplace=True)
         df1['股票代码']=df['股票代码'].iloc[-1]
         df1['名称']=df['名称'].iloc[-1]
-        df1['pct_chg']=(df1['close']-df1['close'].shift(periods=-1))/df1['close'].shift(periods=-1)
-        df1.sort_values(by=['date'], inplace=True)
-        df1.to_csv(goal_path+filename.split('\\')[-1],encoding='utf-8',index=None)
+        df1['涨跌幅']=(df1['收盘价']-df1['收盘价'].shift(periods=-1))/df1['收盘价'].shift(periods=-1)
+        df1.sort_values(by=['交易日期'], inplace=True)
+        df1.to_csv(goal_path+filename.split('\\')[-1],encoding='gb18030',index=None)
     except:
         print(filename)
         traceback.print_exc()
@@ -784,7 +784,7 @@ def 参数生成_all(path,goal_path):
     :path:数据源的地址
     :goal_path:目标储存位置
     '''
-    if 'SZ000001.csv' not in os.listdir(goal_path) or pd.read_csv(goal_path+'SZ000001.csv',encoding='utf-8').shape[1]<30 or pd.read_csv(goal_path+'SZ000001.csv',encoding='utf-8')['date'].iat[-1]!=last_train_data():
+    if 'SZ000001.csv' not in os.listdir(goal_path) or pd.read_csv(goal_path+'SZ000001.csv',encoding='gb18030').shape[1]<30 or pd.read_csv(goal_path+'SZ000001.csv',encoding='gb18030')['交易日期'].iat[-1]!=last_train_data():
         delet(goal_path)
     codelist = os.listdir(path)
     for i in range(len(codelist)):
@@ -798,18 +798,18 @@ def 参数生成_all(path,goal_path):
 def 参数生成(filename):
     goal_path=filename.split(',')[1]
     filename=filename.split(',')[0]
-    df=pd.read_csv(filename,encoding='utf-8')
-    df.sort_values(by=['date'], inplace=True)
-    df['date']=pd.to_datetime(df['date'],format=r"%Y/%m/%d")
-    df['复权pct_chg']=df['close']/df['前close']-1
-    df['复权pct_chg'].iloc[0]=df['close'].iloc[0]/df['open'].iloc[0]-1
-    df['复权因子'] = (df['复权pct_chg'] + 1).cumprod()
-    initial_price = df.iloc[0]['close'] / (1 + df.iloc[0]['复权pct_chg'])  # 计算上市价格
-    df['close_后复权'] = initial_price * df['复权因子']  # 相乘得到复权价
-    df['open_后复权'] = df['open'] / df['close'] * df['close_后复权']
-    df['high_后复权'] = df['high'] / df['close'] * df['close_后复权']
-    df['low_后复权'] = df['low'] / df['close'] * df['close_后复权']
-    rename_dict={'open_后复权':'open','close_后复权':'close','high_后复权':'high','low_后复权':'low','vol':'volume','成交额（千元）':'amount'}
+    df=pd.read_csv(filename,encoding='gb18030')
+    df.sort_values(by=['交易日期'], inplace=True)
+    df['交易日期']=pd.to_datetime(df['交易日期'],format=r"%Y/%m/%d")
+    df['复权涨跌幅']=df['收盘价']/df['前收盘价']-1
+    df['复权涨跌幅'].iloc[0]=df['收盘价'].iloc[0]/df['开盘价'].iloc[0]-1
+    df['复权因子'] = (df['复权涨跌幅'] + 1).cumprod()
+    initial_price = df.iloc[0]['收盘价'] / (1 + df.iloc[0]['复权涨跌幅'])  # 计算上市价格
+    df['收盘价_后复权'] = initial_price * df['复权因子']  # 相乘得到复权价
+    df['开盘价_后复权'] = df['开盘价'] / df['收盘价'] * df['收盘价_后复权']
+    df['最高价_后复权'] = df['最高价'] / df['收盘价'] * df['收盘价_后复权']
+    df['最低价_后复权'] = df['最低价'] / df['收盘价'] * df['收盘价_后复权']
+    rename_dict={'开盘价_后复权':'open','收盘价_后复权':'close','最高价_后复权':'high','最低价_后复权':'low','成交量':'volume','成交额（千元）':'amount'}
     df.rename(columns=rename_dict,inplace=True)
     if len(df)>33:
         df['fast'],df['slow'],df['DIFF']=calculateMACD(df['close'])
@@ -862,12 +862,12 @@ def 参数生成(filename):
     stock['RVI']=RVI(stock)
     stock['VHF_ma10'] = talib.MA(stock['VHF'] , timeperiod=10)
     stock['RVI_ma10'] = talib.MA(stock['RVI'] , timeperiod=10)
-    stock=stock[['date','股票代码','名称','close','pct_chg','turnover_rate','volume','amount','总市值','流通市值','复权pct_chg','close','open','high','low','fast','slow','diff','rsi_6','rsi_12','rsi_24','ma_5','ma_10','ma_20','ma_30','ma_60','ma_6','bias_6','ma_12','bias_12','ma_24','bias_24','close_20_sma','close_20_mstd','boll','boll_ub','boll_lb','kdjk_9','kdjd_9','kdjj_9','middle_14_sma','cci','close_-1_s','tr','atr','high_delta','low_delta','pdi_14','mdi_14','dx_14','dx_6_ema','adx_6_ema','trix','tema','vr','close_10_sma','close_50_sma','dma','VHF_ma10','RVI_ma10','OBV_ma10','DPO','RVI','VHF','wr_6','MOM','OBV','CMO','ROC','ROC_ma10','PSY','PSY_ma10','wr_10']]
+    stock=stock[['交易日期','股票代码','名称','收盘价','涨跌幅','换手率','volume','成交金额','总市值','流通市值','复权涨跌幅','close','open','high','low','fast','slow','diff','rsi_6','rsi_12','rsi_24','ma_5','ma_10','ma_20','ma_30','ma_60','ma_6','bias_6','ma_12','bias_12','ma_24','bias_24','close_20_sma','close_20_mstd','boll','boll_ub','boll_lb','kdjk_9','kdjd_9','kdjj_9','middle_14_sma','cci','close_-1_s','tr','atr','high_delta','low_delta','pdi_14','mdi_14','dx_14','dx_6_ema','adx_6_ema','trix','tema','vr','close_10_sma','close_50_sma','dma','VHF_ma10','RVI_ma10','OBV_ma10','DPO','RVI','VHF','wr_6','MOM','OBV','CMO','ROC','ROC_ma10','PSY','PSY_ma10','wr_10']]
     #stock.drop(changeratelist,axis=1,inplace=True)
     stock.replace(float('inf'),0,inplace=True)
     stock.replace(float('-inf'),0,inplace=True)
     for i in range(len(averagelist)):
-        stock[str(list(stock.columns)[averagelist[i]])] =stock[str(list(stock.columns)[averagelist[i]])]/stock['close']  #stock.apply(lambda x: x[str(list(stock.columns)[averagelist[i]-1])] / x['close'], axis=1)
+        stock[str(list(stock.columns)[averagelist[i]])] =stock[str(list(stock.columns)[averagelist[i]])]/stock['收盘价']  #stock.apply(lambda x: x[str(list(stock.columns)[averagelist[i]-1])] / x['close'], axis=1)
     for i in changeratelist:
         k=stock[i].shift(1)
         k.drop([stock.index[0]],inplace=True)
@@ -883,11 +883,11 @@ def 参数生成(filename):
         # stock[list(stock.columns)[i]+'_-2s']=stock[list(stock.columns)[i]]-stock[list(stock.columns)[i]+'_-2']
     stock=stock.fillna(0)
     stock.replace('None',0,inplace=True)
-    # rename_dict={'open':'open_后复权','clsoe':'close_后复权','high':'high_后复权','low':'low_后复权','volume':'vol（手）','amount':'成交额（千元）','pct_chg':'change','change':'pct_chg'}
+    # rename_dict={'open':'开盘价_后复权','clsoe':'收盘价_后复权','high':'最高价_后复权','low':'最低价_后复权','volume':'成交量（手）','amount':'成交额（千元）','涨跌幅':'涨跌额','涨跌额':'涨跌幅'}
     # df.rename(columns=rename_dict,inplace=True)
     stock=stock[50:]
     # lock.acquire()
-    stock.to_csv(goal_path+filename.split('\\')[-1],encoding='utf-8',index=None,float_format='%.4f')
+    stock.to_csv(goal_path+filename.split('\\')[-1],encoding='gb18030',index=None,float_format='%.4f')
     # lock.release()
     return 0
 def 采样_all(path,goal_path,name,date_remain,阈值,manage):
@@ -919,10 +919,10 @@ def 采样_all(path,goal_path,name,date_remain,阈值,manage):
         pool.close()
         pool.join()
 def 采样方法(df,阈值):
-    df['复权pct_chg下']=(df['close'].shift(-2)-df['open'].shift(-1))/df['open'].shift(-1)
-    # df['target']=df['复权pct_chg下']
-    df.loc[df['复权pct_chg下']>=阈值, 'target'] = 1
-    df.loc[df['复权pct_chg下']<阈值, 'target'] = 0
+    df['复权涨跌幅下']=(df['close'].shift(-2)-df['open'].shift(-1))/df['open'].shift(-1)
+    # df['target']=df['复权涨跌幅下']
+    df.loc[df['复权涨跌幅下']>=阈值, 'target'] = 1
+    df.loc[df['复权涨跌幅下']<阈值, 'target'] = 0
     return df
 def 采样(massage):
     '''
@@ -932,19 +932,19 @@ def 采样(massage):
     goal_path=massage.split(',')[1]+massage.split(',')[2]
     date_remain=int(massage.split(',')[3])
     阈值=float(massage.split(',')[4])
-    df=pd.read_csv(origin_data[:-12]+'SZ000001.csv',encoding='utf-8')
-    date=df['date'].iloc[-date_remain]
+    df=pd.read_csv(origin_data[:-12]+'SZ000001.csv',encoding='gb18030')
+    date=df['交易日期'].iloc[-date_remain]
     try:
-        df=pd.read_csv(origin_data,encoding='utf-8')
-        df=df[~(df['close'].isin([0.0]))]
-        df=df[~(df['close'].isin([0]))]
-        if len(df)>60 and len(df)>date_remain and compare_date(df['date'].iloc[-date_remain],date) :
+        df=pd.read_csv(origin_data,encoding='gb18030')
+        df=df[~(df['收盘价'].isin([0.0]))]
+        df=df[~(df['收盘价'].isin([0]))]
+        if len(df)>60 and len(df)>date_remain and compare_date(df['交易日期'].iloc[-date_remain],date) :
             df=采样方法(df,阈值)
-            df=df[~(df['close'].isin([0.0]))]
-            df=df[~(df['close'].isin([0]))]
+            df=df[~(df['收盘价'].isin([0.0]))]
+            df=df[~(df['收盘价'].isin([0]))]
             df=df.iloc[3:-date_remain,:]
             lock.acquire()
-            df.to_csv(goal_path+str(阈值)+','+str(date_remain)+'.csv',encoding='utf-8',index=False,mode='a',header=None)
+            df.to_csv(goal_path+str(阈值)+','+str(date_remain)+'.csv',encoding='gb18030',index=False,mode='a',header=None)
             lock.release()
     except:
         print(massage)
@@ -956,14 +956,14 @@ def 采样2(massage):
     goal_path=massage.split(',')[1]+massage.split(',')[2]
     date_remain=int(massage.split(',')[3])
     阈值=float(massage.split(',')[4])
-    df=pd.read_csv(origin_data[:-12]+'SZ000001.csv',encoding='utf-8')
-    date=df['date'].iloc[-date_remain]
+    df=pd.read_csv(origin_data[:-12]+'SZ000001.csv',encoding='gb18030')
+    date=df['交易日期'].iloc[-date_remain]
     try:
-        df=pd.read_csv(origin_data,encoding='utf-8')
-        if len(df)>60 and len(df)>date_remain and compare_date(df['date'].iloc[-date_remain],date) :
+        df=pd.read_csv(origin_data,encoding='gb18030')
+        if len(df)>60 and len(df)>date_remain and compare_date(df['交易日期'].iloc[-date_remain],date) :
             df=采样方法(df,阈值)
             df=df.iloc[3:-date_remain,:]
-            df.to_csv(goal_path+str(阈值)+','+str(date_remain)+'.csv',encoding='utf-8',index=False,mode='a')
+            df.to_csv(goal_path+str(阈值)+','+str(date_remain)+'.csv',encoding='gb18030',index=False,mode='a')
     except:
         print(massage)
 def 测试采样(massage):
@@ -975,15 +975,15 @@ def 测试采样(massage):
     goal_path=massage.split(',')[1]+massage.split(',')[2]
     date_remain=int(massage.split(',')[3])
     阈值=float(massage.split(',')[4])
-    df=pd.read_csv(origin_data[:-12]+'SZ000001.csv',encoding='utf-8')
-    date=df['date'].iloc[-1]
+    df=pd.read_csv(origin_data[:-12]+'SZ000001.csv',encoding='gb18030')
+    date=df['交易日期'].iloc[-1]
     try:
-        df=pd.read_csv(origin_data,encoding='utf-8')
-        if len(df)>60 and len(df)>date_remain and compare_date(df['date'].iloc[-1],date) :
+        df=pd.read_csv(origin_data,encoding='gb18030')
+        if len(df)>60 and len(df)>date_remain and compare_date(df['交易日期'].iloc[-1],date) :
             df=采样方法(df,阈值)
             df=df.iloc[-date_remain:-2,:]
             lock.acquire()
-            df.to_csv(goal_path+str(阈值)+','+str(date_remain)+'测试'+'.csv',encoding='utf-8',index=False,mode='a',header=None)
+            df.to_csv(goal_path+str(阈值)+','+str(date_remain)+'测试'+'.csv',encoding='gb18030',index=False,mode='a',header=None)
             lock.release()
     except:
         print(massage)
@@ -996,13 +996,13 @@ def 测试采样2(massage):
     goal_path=massage.split(',')[1]+massage.split(',')[2]
     date_remain=int(massage.split(',')[3])
     阈值=float(massage.split(',')[4])
-    df=pd.read_csv(origin_data[:-12]+'SZ000001.csv',encoding='utf-8')
-    date=df['date'].iloc[-1]
+    df=pd.read_csv(origin_data[:-12]+'SZ000001.csv',encoding='gb18030')
+    date=df['交易日期'].iloc[-1]
     try:
-        df=pd.read_csv(origin_data,encoding='utf-8')
-        if len(df)>60 and len(df)>date_remain and compare_date(df['date'].iloc[-1],date) :
+        df=pd.read_csv(origin_data,encoding='gb18030')
+        if len(df)>60 and len(df)>date_remain and compare_date(df['交易日期'].iloc[-1],date) :
             df=采样方法(df,阈值)
             df=df.iloc[-date_remain:-2,:]
-            df.to_csv(goal_path+str(阈值)+','+str(date_remain)+'测试'+'.csv',encoding='utf-8',index=False,mode='a')
+            df.to_csv(goal_path+str(阈值)+','+str(date_remain)+'测试'+'.csv',encoding='gb18030',index=False,mode='a')
     except:
         print(massage)

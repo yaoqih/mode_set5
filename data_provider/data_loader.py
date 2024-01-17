@@ -322,12 +322,13 @@ class Dataset_Stock(Dataset):
         '''
         df_raw.columns: ['date', ...(other features), target feature]
         '''
+        df_raw=df_raw[df_raw["date"]>='2010-01-01']
         cols = list(df_raw.columns)
         cols.remove(self.target)
         cols.remove('date')
         df_raw = df_raw[['date'] + cols + [self.target]]
-        num_train = int(len(df_raw) * 0.8)
-        num_test = int(len(df_raw) * 0.1)
+        num_train = int(len(df_raw) * 1)
+        num_test = int(len(df_raw) * 0)
         num_vali = len(df_raw) - num_train - num_test
         border1s = [0, num_train - self.seq_len, len(df_raw) - num_test - self.seq_len]
         border2s = [num_train, num_train + num_vali, len(df_raw)]

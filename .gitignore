@@ -1,5 +1,7 @@
 /origin_data/*
 /factor/*
+/factor_old/*
 /checkpoints/*
-
+/pretrain_checkpoints/*
+/wandb/*
 *.pyc

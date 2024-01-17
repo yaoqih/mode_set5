@@ -5,7 +5,13 @@ from experiments.exp_long_term_forecasting_partial import Exp_Long_Term_Forecast
 import random
 import numpy as np
 import wandb
+from download_copy import *
+from 指标计算 import *
 if __name__ == '__main__':
+    delet(basic_data_save_path)
+    download_basic_data_all(basic_data_save_path)
+    delet(factor_path)
+    参数生成_all(basic_data_save_path,factor_path)
     fix_seed = 2023
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
