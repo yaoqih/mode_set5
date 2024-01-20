@@ -17,12 +17,14 @@ def result_translate(file_name):
 @app.route('/<file_name>')
 def hello_world_sample(file_name):
     res=result_translate(save_path+file_name)
-    return render_template('index.html', res1=res,file_name=file_name)
+    stock_num=len(os.listdir('./factor/'))
+    return render_template('index.html', res1=res,file_name=file_name,stock_num=stock_num)
 @app.route('/')
 def hello_world():
     stock_list=os.listdir(save_path)
+    stock_num=len(os.listdir('./factor/'))
     res=result_translate(save_path+stock_list[-1])
-    return render_template('index.html', res1=res,file_name=stock_list[-1])
+    return render_template('index.html', res1=res,file_name=stock_list[-1],stock_num=stock_num)
 @app.route('/result')
 def result():
     stock_list=os.listdir(save_path)

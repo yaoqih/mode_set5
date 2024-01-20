@@ -7,8 +7,10 @@ import pandas as pd
 import time
 from multiprocessing import Pool,Lock
 from config import basic_data_save_path,other_file_path
+proxies = { "http": None, "https": None}
 s=requests.session()
 s.trust_env=False
+s.proxies=proxies
 def download_basic_data(inputfile):
     # try:
     trandtime=last_train_data()
