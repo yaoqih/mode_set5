@@ -14,7 +14,7 @@ data_dict = {
 }
 
 
-def data_provider(args, flag):
+def data_provider(args, flag,last_n=0):
     Data = data_dict[args.data]
     timeenc = 0 if args.embed != 'timeF' else 1
 
@@ -40,8 +40,7 @@ def data_provider(args, flag):
         drop_last = True
         batch_size =  1
         # data_set=data_set[-1]
-        Data = Dataset_stock_Pred
-    data_set = Data(
+        data_set = Dataset_stock_Pred(
         root_path=args.root_path,
         data_path=args.data_path,
         flag=flag,
@@ -50,7 +49,19 @@ def data_provider(args, flag):
         target=args.target,
         timeenc=timeenc,
         freq=freq,
+        last_n=last_n,
     )
+    else:
+        data_set = Data(
+            root_path=args.root_path,
+            data_path=args.data_path,
+            flag=flag,
+            size=[args.seq_len, args.label_len, args.pred_len],
+            features=args.features,
+            target=args.target,
+            timeenc=timeenc,
+            freq=freq,
+        )
     # print(flag, len(data_set))
     data_loader = DataLoader(
         data_set,

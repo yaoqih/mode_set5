@@ -729,7 +729,7 @@ class Dataset_Pred(Dataset):
 class Dataset_stock_Pred(Dataset):
     def __init__(self, root_path, flag='finial', size=None,
                  features='S', data_path='ETTh1.csv',
-                 target='OT', scale=True, inverse=False, timeenc=0, freq='15min', cols=None):
+                 target='OT', scale=True, inverse=False, timeenc=0, freq='15min', cols=None,last_n=0):
         # size [seq_len, label_len, pred_len]
         # info
         if size == None:
@@ -752,6 +752,7 @@ class Dataset_stock_Pred(Dataset):
         self.cols = cols
         self.root_path = root_path
         self.data_path = data_path
+        self.last_n=last_n
         self.__read_data__()
 
     def __read_data__(self):
@@ -768,10 +769,10 @@ class Dataset_stock_Pred(Dataset):
             cols = list(df_raw.columns)
             cols.remove(self.target)
             cols.remove('date')
-        self.latest_date=df_raw['date'].values[-1]
+        self.latest_date=df_raw['date'].values[-self.last_n-1]
         df_raw = df_raw[['date'] + cols + [self.target]]
-        border1 = len(df_raw) - self.seq_len
-        border2 = len(df_raw)
+        border1 = len(df_raw) - self.seq_len-self.last_n
+        border2 = len(df_raw) - self.last_n
 
         if self.features == 'M' or self.features == 'MS':
             cols_data = df_raw.columns[1:]
@@ -807,7 +808,10 @@ class Dataset_stock_Pred(Dataset):
         if self.inverse:
             self.data_y = df_data.values[border1:border2]
         else:
-            self.data_y = data[border1:border2]
+            if self.last_n>1:
+                self.data_y = data[border1:border2+2]
+            else:
+                self.data_y = data[border1:border2]
         self.data_stamp = data_stamp
 
     def __getitem__(self, index):
@@ -820,7 +824,7 @@ class Dataset_stock_Pred(Dataset):
         if self.inverse:
             seq_y = self.data_x[r_begin:r_begin + self.label_len]
         else:
-            seq_y = self.data_y[r_begin:r_begin + self.label_len]
+            seq_y = self.data_y[r_begin:r_end]
         seq_x_mark = self.data_stamp[s_begin:s_end]
         seq_y_mark = self.data_stamp[r_begin:r_end]
 

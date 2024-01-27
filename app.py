@@ -9,6 +9,7 @@ def result_translate(file_name):
     df1=pd.read_csv(file_name)[:10]
     df1['score1'] = df1['score1'].round(3)
     df1['score2'] = df1['score2'].round(3)
+    df1['pred_rate'] = df1['pred_rate'].round(4)
     res1=df1.to_html(index=None)
     for i in range(len(df1)):
         url=f'https://m.10jqka.com.cn/stockpage/33_'+df1['stock'].iloc[i][1:]+'/?client_userid=xXiPr&share_hxapp=gsc&share_action=fenshi.more.share.hyperlink&back_source=hyperlink'

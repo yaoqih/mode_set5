@@ -10,11 +10,17 @@ from 指标计算 import *
 from stock_data_tools import last_train_data
 from datetime import datetime
 if __name__ == '__main__' and last_train_data()==datetime.now().strftime('%Y-%m-%d'):
-
     delet(basic_data_save_path)
     download_basic_data_all(basic_data_save_path)
+    if len(os.listdir(basic_data_save_path))<3400:
+        delet(basic_data_save_path)
+        download_basic_data_all(basic_data_save_path)
+    if len(os.listdir(basic_data_save_path))<3400:
+        delet(basic_data_save_path)
+        download_basic_data_all(basic_data_save_path)
     delet(factor_path)
     参数生成_all(basic_data_save_path,factor_path)
+
     fix_seed = 2023
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
@@ -165,7 +171,7 @@ if __name__ == '__main__' and last_train_data()==datetime.now().strftime('%Y-%m-
             #     exp.predict(setting, True)
             # exp.pre_train_predict(setting)
             # exp.pre_train_predict(setting,load=True)
-            exp.predict_latest(setting)
+            exp.predict_latest(setting,load=True)
             torch.cuda.empty_cache()
     else:
         ii = 0

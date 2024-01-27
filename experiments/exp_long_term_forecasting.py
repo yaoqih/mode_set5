@@ -891,7 +891,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         checkpoint_name=self.args.checkpoint_name
         if load:
             path = os.path.join(self.args.checkpoints, setting)
-            best_model_path = path + '/' + f'{checkpoint_name}.pth'
+            best_model_path = path + '/' + f'{checkpoint_name}_new.pth'
             if torch.load(best_model_path).get('net'):
                 self.model.load_state_dict(torch.load(best_model_path)['net'])
             else:
